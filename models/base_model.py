@@ -8,6 +8,7 @@ from sqlalchemy import Column, String, DateTime
 
 Base = declarative_base()
 
+
 class BaseModel:
     """A base class for all hbnb models"""
     id = Column(String(60), nullable=False, primary_key=True)
@@ -45,7 +46,7 @@ class BaseModel:
     def to_dict(self):
         """Convert instance into dict format"""
         dictionary = {key: value for key, value in self.__dict__.items()
-              if value and key != "_sa_instance_state"}
+                      if value and key != "_sa_instance_state"}
         dictionary.update({'__class__':
                           (str(type(self)).split('.')[-1]).split('\'')[0]})
         dictionary['created_at'] = self.created_at.isoformat()

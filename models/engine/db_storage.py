@@ -31,13 +31,13 @@ class DBStorage:
                 'db': os.getenv('HBNB_MYSQL_DB'),
             }
             self.__engine = create_engine('{}+{}://{}:{}@{}/{}'.format(
-                        self.__config['dialect'],
-                        self.__config['driver'],
-                        self.__config['user'],
-                        self.__config['pwd'],
-                        self.__config['host'],
-                        self.__config['db']
-                        ), pool_pre_ping=True)
+                self.__config['dialect'],
+                self.__config['driver'],
+                self.__config['user'],
+                self.__config['pwd'],
+                self.__config['host'],
+                self.__config['db']
+            ), pool_pre_ping=True)
         except Exception:
             pass
         if os.getenv("HBNB_ENV") == "test":
@@ -47,8 +47,9 @@ class DBStorage:
         """Return dictionary of objects
         """
         dbResult = {}
-        validClass = {'User':User, 'Place':Place,
-                      'State':State, 'City':City, 'Amenity':Amenity, 'Review':Review}
+        validClass = {'User': User, 'Place': Place,
+                      'State': State, 'City': City,
+                      'Amenity': Amenity, 'Review': Review}
         if cls is None:
             for val in validClass.values():
                 query = self.__session.query(val)
