@@ -52,13 +52,12 @@ class DBStorage:
                       'Amenity': Amenity, 'Review': Review}
         if cls is None:
             for val in validClass.values():
-                query = self.__session.query(val)
+                query = self.__session.query(val).all()
                 for obj in query:
                     key = "{}.{}".format(obj.__class__.__name__, obj.id)
                     dbResult[key] = obj
-
         elif cls in validClass:
-            query = self.__session.query(validClass[cls])
+            query = self.__session.query(validClass[cls]).all()
             for obj in query:
                 key = "{}.{}".format(obj.__class__.__name__, obj.id)
                 dbResult[key] = obj
@@ -74,6 +73,7 @@ class DBStorage:
     def save(self):
         """Commit all changes of the session
         """
+        print("commit done")
         self.__session.commit()
 
     def delete(self, obj=None):
