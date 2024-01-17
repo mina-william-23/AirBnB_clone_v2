@@ -3,6 +3,7 @@
 import os
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, ForeignKey, Integer, String, Float
+from sqlalchemy.orm import relationship
 
 
 class Place(BaseModel, Base):
@@ -20,6 +21,7 @@ class Place(BaseModel, Base):
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
         amenity_ids = []
+        reviews = relationship("Review", passive_deletes=True, backref="place")
     else:
         city_id = ""
         user_id = ""
@@ -32,3 +34,33 @@ class Place(BaseModel, Base):
         latitude = 0.0
         longitude = 0.0
         amenity_ids = []
+        reviews = []
+
+        @property
+        def reviews(self):
+            """Getter for reviews"""
+            from models import storage
+            from models.review import Review
+            review_list = []
+            for key, value in storage.all(Review).items():
+                if value.place_id == self.id:
+                    review_list.append(value)
+            return review_list
+
+        @property
+        def amenities(self):
+            """Getter for amenities"""
+            from models import storage
+            from models.amenity import Amenity
+            amenity_list = []
+            for key, value in storage.all(Amenity).items():
+                if value.id in self.amenity_ids:
+                    amenity_list.append(value)
+            return amenity_list
+
+        @amenities.setter
+        def amenities(self, obj):
+            """Setter for amenities"""
+            from models.amenity import Amenity
+            if type(obj) == Amenity:
+                self.amenity_ids.append(obj.id)

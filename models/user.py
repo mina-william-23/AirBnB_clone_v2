@@ -15,6 +15,7 @@ class User(BaseModel, Base):
         first_name = Column(String(128))
         last_name = Column(String(128))
         places = relationship("Place", passive_deletes=True, backref="user")
+        reviews = relationship("Review", passive_deletes=True, backref="user")
         amenity_ids = []
     else:
         email = ""
