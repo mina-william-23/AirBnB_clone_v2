@@ -49,8 +49,8 @@ class DBStorage:
         """
         dbResult = {}
         validClass = {'User': User, 'Place': Place,
-                      'State': State, 'City': City}
-        #   'Amenity': Amenity, 'Review': Review}
+                      'State': State, 'City': City,
+          'Amenity': Amenity, 'Review': Review}
         if cls is None:
             for val in validClass.values():
                 query = self.__session.query(val).all()
