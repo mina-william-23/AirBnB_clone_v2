@@ -14,9 +14,8 @@ class User(BaseModel, Base):
         password = Column(String(128), nullable=False)
         first_name = Column(String(128))
         last_name = Column(String(128))
-        places = relationship("Place", passive_deletes=True, backref="user")
-        reviews = relationship("Review", passive_deletes=True, backref="user")
-        amenity_ids = []
+        places = relationship("Place", backref="user", passive_deletes=True)
+        reviews = relationship("Review", backref="user", passive_deletes=True)
     else:
         email = ""
         password = ""

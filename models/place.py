@@ -22,7 +22,7 @@ class Place(BaseModel, Base):
         longitude = Column(Float, nullable=True)
         amenity_ids = []
 
-        reviews = relationship("Review", passive_deletes=True, backref="place")
+        reviews = relationship("Review", backref="place", passive_deletes=True)
     else:
         city_id = ""
         user_id = ""
@@ -55,7 +55,7 @@ class Place(BaseModel, Base):
             from models import storage
             from models.amenity import Amenity
             amenity_list = []
-            for key, value in storage.all(Amenity).items():
+            for value in storage.all(Amenity).values():
                 if value.id in self.amenity_ids:
                     amenity_list.append(value)
             return amenity_list
@@ -64,5 +64,5 @@ class Place(BaseModel, Base):
         def amenities(self, obj):
             """Setter for amenities"""
             from models.amenity import Amenity
-            if type(obj) == Amenity:
+            if  obj and type(obj) == Amenity:
                 self.amenity_ids.append(obj.id)
