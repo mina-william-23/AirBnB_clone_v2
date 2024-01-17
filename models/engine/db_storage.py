@@ -11,6 +11,7 @@ from models.state import State
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+from urllib.parse import quote_plus
 
 
 class DBStorage:
@@ -27,7 +28,7 @@ class DBStorage:
                 'driver': 'mysqldb',
                 'host': os.getenv('HBNB_MYSQL_HOST'),
                 'user': os.getenv('HBNB_MYSQL_USER'),
-                'pwd': os.getenv('HBNB_MYSQL_PWD'),
+                'pwd': quote_plus(os.getenv('HBNB_MYSQL_PWD')),
                 'db': os.getenv('HBNB_MYSQL_DB'),
             }
             self.__engine = create_engine('{}+{}://{}:{}@{}/{}'.format(
@@ -48,8 +49,8 @@ class DBStorage:
         """
         dbResult = {}
         validClass = {'User': User, 'Place': Place,
-                      'State': State, 'City': City,
-                      'Amenity': Amenity, 'Review': Review}
+                      'State': State, 'City': City}
+        #   'Amenity': Amenity, 'Review': Review}
         if cls is None:
             for val in validClass.values():
                 query = self.__session.query(val).all()
@@ -73,7 +74,6 @@ class DBStorage:
     def save(self):
         """Commit all changes of the session
         """
-        print("commit done")
         self.__session.commit()
 
     def delete(self, obj=None):

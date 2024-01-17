@@ -15,10 +15,10 @@ class BaseModel:
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
+        """Instatntiates a new model"""
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
         self.id = str(uuid.uuid4())
-        """Instatntiates a new model"""
         if kwargs:
             if "updated_at" in kwargs:
                 kwargs['updated_at'] = datetime.strptime(
