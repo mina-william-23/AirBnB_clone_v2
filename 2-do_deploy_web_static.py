@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """Fabric script that generates a .tgz archive from the contents of the"""
-from fabric.api import sudo, env, put, local, task
-from datetime import datetime
+# from fabric.api import sudo, env, put, local, task
+from fabric.api import *
+from fabric.operations import put, sudo
 
 
 env.hosts = ['18.207.112.242', '54.167.84.94']
