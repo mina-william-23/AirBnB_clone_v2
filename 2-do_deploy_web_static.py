@@ -4,37 +4,7 @@ from fabric.api import sudo, env, put, local, task
 from datetime import datetime
 
 
-@task
-def do_pack():
-    """Function To Compress File Using tar"""
-    try:
-        current_time = datetime.now().strftime("%Y%m%d%H%M%S")
-        folder_to_save = "versions"
-        local("mkdir -p {}".fromat(folder_to_save))
-        file_name_generated = "web_static_{}.tgz".format(current_time)
-        local("tar -cvzf {}/{} web_static".
-              fromat(folder_to_save, file_name_generated))
-        return "{}/{}".fromat(folder_to_save, file_name_generated)
-    except Exception:
-        return None
-
-
-@task
-def get_ip_address(domain):
-    """Function To Get IP Address"""
-    import socket
-    try:
-        ip_address = socket.gethostbyname(domain)
-        return ip_address
-    except socket.gaierror:
-        return False
-
-
-env.hosts = [get_ip_address("web-01.minawilliam.tech"),
-             get_ip_address("web-02.minawilliam.tech")]
-
-# env.user = 'ubuntu'
-# env.key_filename = '~/.ssh/alx_server1'
+env.hosts = ['18.207.112.242', '54.167.84.94']
 
 
 @task
