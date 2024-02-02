@@ -10,11 +10,10 @@ def do_pack():
     try:
         current_time = datetime.now().strftime("%Y%m%d%H%M%S")
         folder_to_save = "versions"
-        local("mkdir -p {}".fromat(folder_to_save))
-        file_name_generated = "web_static_{}.tgz".format(current_time)
-        local("tar -cvzf {}/{} web_static".
-              fromat(folder_to_save, file_name_generated))
-        return "{}/{}".fromat(folder_to_save, file_name_generated)
+        local(f"mkdir -p {folder_to_save}")
+        file_name_generated = f"web_static_{current_time}.tgz"
+        local(f"tar -cvzf {folder_to_save}/{file_name_generated} web_static")
+        return f"{folder_to_save}/{file_name_generated}"
     except Exception:
         return None
 
@@ -55,24 +54,22 @@ def do_deploy(archive_path):
         file_name_generated = archive_path.split(".")[0]
         file_name_generated = file_name_generated.split("/")[-1]
 
-        server_archive_path = "/tmp/{}.tgz".format(file_name_generated)
-        sudo("mkdir -p {}/{}")
-        sudo("tar -xzf /tmp/{}.tgz -C {}/{}".
-             format(file_name_generated, folder_to_save, file_name_generated))
+        server_archive_path = f"/tmp/{file_name_generated}.tgz"
+        sudo(f"mkdir -p {folder_to_save}/{file_name_generated}")
+        sudo(f"tar -xzf /tmp/{file_name_generated}.tgz "
+             f"-C {folder_to_save}/{file_name_generated}")
 
-        sudo("rm {}".format(server_archive_path))
-        sudo("mv {}/{}/web_static/* {}/{}/".
-             format(folder_to_save, file_name_generated,
-                    folder_to_save, file_name_generated))
-        sudo("rm -rf {}/{}/web_static".
-             format(folder_to_save, file_name_generated))
+        sudo(f"rm {server_archive_path}")
+        sudo(f"mv {folder_to_save}/{file_name_generated}/web_static/*"
+             f" {folder_to_save}/{file_name_generated}/")
+        sudo(f"rm -rf {folder_to_save}/{file_name_generated}/web_static")
 
         try:
             sudo('rm -rf /data/web_static/current')
         except BaseException:
             pass
-        sudo("ln -s {}/{} /data/web_static/current".
-             format(folder_to_save, file_name_generated))
+        sudo(f"ln -s {folder_to_save}/{file_name_generated}"
+             f" /data/web_static/current")
         print("New version deployed!")
         return True
     except Exception:
