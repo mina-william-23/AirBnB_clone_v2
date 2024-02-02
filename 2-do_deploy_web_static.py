@@ -8,7 +8,6 @@ from fabric.operations import put, sudo
 env.hosts = ['18.207.112.242', '54.167.84.94']
 
 
-@task
 def do_deploy(archive_path):
     """Function To Deploy File"""
     """
