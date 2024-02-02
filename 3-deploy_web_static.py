@@ -18,7 +18,6 @@ def do_pack():
         return None
 
 
-@task
 def get_ip_address(domain):
     """Function To Get IP Address"""
     import socket
@@ -31,9 +30,6 @@ def get_ip_address(domain):
 
 env.hosts = [get_ip_address("web-01.minawilliam.tech"),
              get_ip_address("web-02.minawilliam.tech")]
-
-# env.user = 'ubuntu'
-# env.key_filename = '~/.ssh/alx_server1'
 
 
 @task
@@ -72,5 +68,17 @@ def do_deploy(archive_path):
              f" /data/web_static/current")
         print("New version deployed!")
         return True
+    except Exception:
+        return False
+
+
+@task
+def deploy():
+    """full deployment"""
+    try:
+        path = do_pack()
+        if path is None:
+            return False
+        return do_deploy(path)
     except Exception:
         return False
