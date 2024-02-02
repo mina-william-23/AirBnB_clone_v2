@@ -31,8 +31,8 @@ def get_ip_address(domain):
 env.hosts = [get_ip_address("web-01.minawilliam.tech"),
              get_ip_address("web-02.minawilliam.tech")]
 
-# env.user = 'ubuntu'
-# env.key_filename = '~/.ssh/alx_server1'
+env.user = 'ubuntu'
+env.key_filename = '~/.ssh/alx_server1'
 
 @task
 def do_deploy(archive_path):
