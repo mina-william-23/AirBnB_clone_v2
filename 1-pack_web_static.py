@@ -8,7 +8,7 @@ from fabric.api import local, task
 def do_pack():
     '''Function that converts a .tgz archive'''
 
-    local("mkdir -p versions", capture=True)  # capture=True to hide the output
+    local("mkdir -p versions")
     date = datetime.now().strftime("%Y%m%d%H%M%S")
     file_path = "versions/web_static_{}.tgz".format(date)
     try:
