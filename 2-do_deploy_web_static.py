@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Fabric script that generates a .tgz archive from the contents of the"""
-from fabric.api import sudo, env, put, task
+from fabric.api import sudo, env, put
 from datetime import datetime
 
 
@@ -9,7 +9,6 @@ from datetime import datetime
 env.hosts = ['18.207.112.242', '54.167.84.94']
 
 
-@task
 def do_deploy(archive_path):
     """Function To Deploy File"""
     """
