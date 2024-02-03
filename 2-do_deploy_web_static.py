@@ -31,10 +31,8 @@ def do_deploy(archive_path):
             format(folder_to_save, file_name, folder_to_save, file_name))
         run("rm -rf {}/{}/web_static".format(folder_to_save, file_name))
 
-        try:
-            run('rm -rf /data/web_static/current')
-        except BaseException:
-            pass
+        run('rm -rf /data/web_static/current')
+
         run('ln -sf {}/{} /data/web_static/current'.
             format(folder_to_save, file_name))
         print("New version deployed!")
