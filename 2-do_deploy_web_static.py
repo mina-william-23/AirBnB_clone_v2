@@ -19,24 +19,22 @@ def do_deploy(archive_path):
         put(archive_path, "/tmp/")
 
         folder_to_save = "/data/web_static/releases"
-        file_name_generated = archive_path.split(".")[0]
-        file_name_generated = file_name_generated.split("/")[-1]
-
-        server_archive_path = f"/tmp/{file_name_generated}.tgz"
-        sudo(f"mkdir -p {folder_to_save}/{file_name_generated}")
-        sudo(f"tar -xzf /tmp/{file_name_generated}.tgz "
-             f"-C {folder_to_save}/{file_name_generated}")
+        file_name = archive_path.split("/")[-1].split(".")[0]
+        server_archive_path = f"/tmp/{file_name}.tgz"
+        sudo(f"mkdir -p {folder_to_save}/{file_name}")
+        sudo(f"tar -xzf /tmp/{file_name}.tgz "
+             f"-C {folder_to_save}/{file_name}")
 
         sudo(f"rm {server_archive_path}")
-        sudo(f"mv {folder_to_save}/{file_name_generated}/web_static/*"
-             f" {folder_to_save}/{file_name_generated}/")
-        sudo(f"rm -rf {folder_to_save}/{file_name_generated}/web_static")
+        sudo(f"mv {folder_to_save}/{file_name}/web_static/*"
+             f" {folder_to_save}/{file_name}/")
+        sudo(f"rm -rf {folder_to_save}/{file_name}/web_static")
 
         try:
             sudo('rm -rf /data/web_static/current')
         except BaseException:
             pass
-        sudo(f"ln -s {folder_to_save}/{file_name_generated}"
+        sudo(f"ln -s {folder_to_save}/{file_name}"
              f" /data/web_static/current")
         print("New version deployed!")
         return True
