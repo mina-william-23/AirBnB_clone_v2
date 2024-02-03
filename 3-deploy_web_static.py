@@ -8,18 +8,16 @@ env.hosts = ['18.207.112.242', '54.167.84.94']
 
 @task
 def do_pack():
-    """Function To Compress File Using tar"""
+    '''Function that converts a .tgz archive'''
+
+    local("mkdir -p versions")
+    date = datetime.now().strftime("%Y%m%d%H%M%S")
+    file_path = "versions/web_static_{}.tgz".format(date)
     try:
-        time = datetime.utcnow().strftime('%Y%m%d%H%M%S')
-        file_path = "versions/web_static_{}.tgz".format(time)
-        cmd = "tar -cvzf {} web_static/*".format(file_path)
-        local("mkdir -p versions")
-        local(cmd)
-        if os.path.exists(file_path):
-            return file_path
-        else:
-            return None
-    except Exception:
+        # compress the file in path to web_static
+        local("tar -cvzf {} web_static".format(file_path))
+        return file_path
+    except Exception as e:
         return None
 
 

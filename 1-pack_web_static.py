@@ -2,7 +2,6 @@
 '''Fabric script that generates a .tgz archive'''
 from datetime import datetime
 from fabric.api import local, task
-# from fabric import task
 
 
 @task
