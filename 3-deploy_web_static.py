@@ -12,10 +12,13 @@ def do_pack():
     try:
         current_time = datetime.now().strftime("%Y%m%d%H%M%S")
         folder_to_save = "versions"
-        local(f"mkdir -p {folder_to_save}")
-        file_name_generated = f"web_static_{current_time}.tgz"
-        local(f"tar -cvzf {folder_to_save}/{file_name_generated} web_static")
-        return f"{folder_to_save}/{file_name_generated}"
+        file_name_generated = "web_static_{}.tgz".format(current_time)
+
+        local("mkdir -p {}".format(folder_to_save))
+        local("tar -cvzf {}/{} web_static".
+              format(folder_to_save, file_name_generated))
+
+        return "{}/{}".format(folder_to_save, file_name_generated)
     except Exception:
         return None
 
