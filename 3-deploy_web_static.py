@@ -10,14 +10,15 @@ env.hosts = ['18.207.112.242', '54.167.84.94']
 def do_pack():
     """Function To Compress File Using tar"""
     try:
-        current_time = datetime.now().strftime("%Y%m%d%H%M%S")
+        current_time = datetime.utcnow().strftime("%Y%m%d%H%M%S")
         folder_to_save = "versions"
         file_name_generated = "web_static_{}.tgz".format(current_time)
         file_path = "{}/{}".format(folder_to_save, file_name_generated)
 
         local("mkdir -p {}".format(folder_to_save))
         local("tar -cvzf {} web_static".format(file_path))
-        return file_path
+        if os.path.exists(file_path):
+            return file_path
     except Exception:
         return None
 
