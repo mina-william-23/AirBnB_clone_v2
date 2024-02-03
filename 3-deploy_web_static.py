@@ -8,15 +8,17 @@ env.hosts = ['18.207.112.242', '54.167.84.94']
 
 @task
 def do_pack():
-    """Archive the content of web_static folder"""
+    """
+        generates a .tgz archine from contents of web_static
+    """
     time = datetime.utcnow().strftime('%Y%m%d%H%M%S')
-    file_path = "versions/web_static_{}.tgz".format(time)
-    cmd = "tar -cvzf {} web_static/*".format(file_path)
-    local("mkdir -p versions")
-    local(cmd)
-    if os.path.exists(file_path):
-        return file_path
-    else:
+    file_name = "versions/web_static_{}.tgz".format(time)
+    try:
+        local("mkdir -p ./versions")
+        local("tar --create --verbose -z --file={} ./web_static"
+              .format(file_name))
+        return file_name
+    except Exception as e:
         return None
 
 
@@ -49,8 +51,11 @@ def do_deploy(archive_path):
 
 @task
 def deploy():
-    """Full deploy of static web"""
-    archive_path = do_pack()
-    if not archive_path:
+    """full deployment"""
+    try:
+        path = do_pack()
+        if path is None:
+            return False
+        return do_deploy(path)
+    except Exception:
         return False
-    return do_deploy(archive_path)
