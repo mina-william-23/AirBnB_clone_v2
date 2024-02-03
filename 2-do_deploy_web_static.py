@@ -6,7 +6,20 @@ from fabric.operations import put, run
 import os
 
 
-env.hosts = ['18.207.112.242', '54.167.84.94']
+def get_ip_address(domain):
+    """Function To Get IP Address"""
+    import socket
+    try:
+        ip_address = socket.gethostbyname(domain)
+        return ip_address
+    except socket.gaierror:
+        return False
+
+
+env.hosts = [get_ip_address("web-01.minawilliam.tech"),
+             get_ip_address("web-02.minawilliam.tech")]
+
+# env.hosts = ['18.207.112.242', '54.167.84.94']
 
 
 def do_deploy(archive_path):
