@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Fabric script that generates a .tgz archive from the contents of the"""
-from fabric.api import sudo, env, put
-from datetime import datetime
+from fabric.api import *
+from fabric.operations import put
 
 
 # env.user = 'ubuntu'
