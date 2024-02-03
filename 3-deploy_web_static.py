@@ -13,12 +13,11 @@ def do_pack():
         current_time = datetime.now().strftime("%Y%m%d%H%M%S")
         folder_to_save = "versions"
         file_name_generated = "web_static_{}.tgz".format(current_time)
+        file_path = "{}/{}".format(folder_to_save, file_name_generated)
 
         local("mkdir -p {}".format(folder_to_save))
-        local("tar -cvzf {}/{} web_static".
-              format(folder_to_save, file_name_generated))
-
-        return "{}/{}".format(folder_to_save, file_name_generated)
+        local("tar -cvzf {} web_static".format(file_path))
+        return file_path
     except Exception:
         return None
 
