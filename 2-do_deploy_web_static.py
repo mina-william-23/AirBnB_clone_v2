@@ -21,21 +21,22 @@ def do_deploy(archive_path):
         folder_to_save = "/data/web_static/releases"
         file_name = archive_path.split("/")[-1].split(".")[0]
         server_archive_path = f"/tmp/{file_name}.tgz"
-        sudo(f"mkdir -p {folder_to_save}/{file_name}")
-        sudo(f"tar -xzf /tmp/{file_name}.tgz "
-             f"-C {folder_to_save}/{file_name}")
 
-        sudo(f"rm {server_archive_path}")
-        sudo(f"mv {folder_to_save}/{file_name}/web_static/*"
-             f" {folder_to_save}/{file_name}/")
-        sudo(f"rm -rf {folder_to_save}/{file_name}/web_static")
+        sudo("mkdir -p {}/{}".format(folder_to_save, file_name))
+        sudo("tar -xzf /tmp/{}.tgz -C {}/{}"
+             .format(file_name, folder_to_save, file_name))
+
+        sudo("rm {}".format(server_archive_path))
+        sudo("mv {}/{}/web_static/* {}/{}/".
+             format(folder_to_save, file_name, folder_to_save, file_name))
+        sudo("rm -rf {}/{}/web_static".format(folder_to_save, file_name))
 
         try:
             sudo('rm -rf /data/web_static/current')
         except BaseException:
             pass
-        sudo(f"ln -s {folder_to_save}/{file_name}"
-             f" /data/web_static/current")
+        sudo("ln -sf {}/{} /data/web_static/current"
+             .format(folder_to_save, file_name))
         print("New version deployed!")
         return True
     except Exception:
