@@ -1,45 +1,44 @@
 #!/usr/bin/python3
 """ Fabric module """
-from fabric.api import env, put, run, task
+from fabric.api import env, put, task, sudo
 import os
-# env.hosts = ['18.207.112.242', '54.167.84.94']
-
-
-@task
-def get_ip_address(domain):
-    """Function To Get IP Address"""
-    import socket
-    try:
-        ip_address = socket.gethostbyname(domain)
-        return ip_address
-    except socket.gaierror:
-        return False
-
-
-env.hosts = [get_ip_address("web-01.minawilliam.tech"),
-             get_ip_address("web-02.minawilliam.tech")]
+env.hosts = ['18.207.112.242', '54.167.84.94']
 
 
 @task
 def do_deploy(archive_path):
-    """Distribute an Archive to servers"""
+    """Function To Deploy File"""
+    """
+    fab -f 2-do_deploy_web_static.py
+    do_deploy:archive_path=versions/web_static_20231009012456.tgz
+    -i ./alx -u root
+    """
     if not os.path.exists(archive_path):
         return False
     try:
-        file_name = archive_path.split("/")[-1].split(".")[0]
-        put(archive_path, '/tmp/')
-        run('mkdir /data/web_static/releases/{}'.format(file_name))
-        run('tar -xzf /tmp/{}.tgz -C /data/web_static/releases/{}'.
-            format(file_name, file_name))
-        run('mv /data/web_static/releases/{}/web_static/* \
-            /data/web_static/releases/{}/'.
-            format(file_name, file_name))
-        run('rm -rf /data/web_static/releases/{}/web_static'.format(file_name))
-        run('rm -rf /tmp/{}.tgz'.format(file_name))
-        run('rm -rf /data/web_static/current')
-        run('ln -sf /data/web_static/releases/{}/ /data/web_static/current'.
-            format(file_name))
+        put(archive_path, "/tmp/")
+
+        folder_to_save = "/data/web_static/releases"
+        file_name_generated = archive_path.split(".")[0]
+        file_name_generated = file_name_generated.split("/")[-1]
+
+        server_archive_path = f"/tmp/{file_name_generated}.tgz"
+        sudo(f"mkdir -p {folder_to_save}/{file_name_generated}")
+        sudo(f"tar -xzf /tmp/{file_name_generated}.tgz "
+             f"-C {folder_to_save}/{file_name_generated}")
+
+        sudo(f"rm {server_archive_path}")
+        sudo(f"mv {folder_to_save}/{file_name_generated}/web_static/*"
+             f" {folder_to_save}/{file_name_generated}/")
+        sudo(f"rm -rf {folder_to_save}/{file_name_generated}/web_static")
+
+        try:
+            sudo('rm -rf /data/web_static/current')
+        except BaseException:
+            pass
+        sudo(f"ln -s {folder_to_save}/{file_name_generated}"
+             f" /data/web_static/current")
         print("New version deployed!")
         return True
-    except Exception as e:
+    except Exception:
         return False
