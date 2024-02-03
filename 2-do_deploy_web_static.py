@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ Fabric module """
-from fabric.api import env, put, task, sudo, run
+from fabric.api import env, put, task, sudo
 import os
 env.hosts = ['18.207.112.242', '54.167.84.94']
 
@@ -16,22 +16,20 @@ def do_deploy(archive_path):
     if not os.path.exists(archive_path):
         return False
     try:
-        put(archive_path, "/tmp/")
-
-        folder = "/data/web_static/releases"
-        file = archive_path.split("/")[-1].split(".")[0]
-
-        run("mkdir -p {}/{}".format(folder, file))
-        run("tar -xzf /tmp/{}.tgz -C {}/{}".
-            format(file, folder, file))
-        run('rm -rf /tmp/{}.tgz'.format(file))
-        run('mv {}/{}/web_static/* {}/{}/'.
-            format(folder, file, folder, file))
-        run("rm -rf {}/{}/web_static".format(folder, file))
-
-        run('rm -rf /data/web_static/current')
-
-        run('ln -sf {}/{} /data/web_static/current'.sformat(folder, file))
+        file_name = archive_path.split("/")[-1].split(".")[0]
+        put(archive_path, '/tmp/')
+        sudo('mkdir -p /data/web_static/releases/{}'.format(file_name))
+        sudo('tar -xzf /tmp/{}.tgz -C /data/web_static/releases/{}'.
+             format(file_name, file_name))
+        sudo('mv /data/web_static/releases/{}/web_static/* \
+             /data/web_static/releases/{}/'.
+             format(file_name, file_name))
+        sudo('rm -rf /data/web_static/releases/{}/web_static'.
+             format(file_name))
+        sudo('rm -rf /tmp/{}.tgz'.format(file_name))
+        sudo('rm -rf /data/web_static/current')
+        sudo('ln -sf /data/web_static/releases/{}/ /data/web_static/current'.
+             format(file_name))
         print("New version deployed!")
         return True
     except Exception:
