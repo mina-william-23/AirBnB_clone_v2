@@ -5,6 +5,7 @@ import os
 # env.hosts = ['18.207.112.242', '54.167.84.94']
 
 
+@task
 def get_ip_address(domain):
     """Function To Get IP Address"""
     import socket
