@@ -22,7 +22,7 @@ def do_deploy(archive_path):
         file = archive_path.split("/")[-1].split(".")[0]
 
         run("mkdir -p {}/{}".format(folder, file))
-        run("tar -xzf /tmp/{}.tgz -C {}/{}"
+        run("tar -xzf /tmp/{}.tgz -C {}/{}".
             format(file, folder, file))
         run('rm -rf /tmp/{}.tgz'.format(file))
         run('mv {}/{}/web_static/* {}/{}/'.
