@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ Fabric module """
-from fabric.api import env, put, task, sudo
+from fabric.api import env, put, task, sudo, run
 import os
 env.hosts = ['18.207.112.242', '54.167.84.94']
 
@@ -22,21 +22,21 @@ def do_deploy(archive_path):
         file_name = archive_path.split("/")[-1].split(".")[0]
         server_archive_path = f"/tmp/{file_name}.tgz"
 
-        sudo("mkdir -p {}/{}".format(folder_to_save, file_name))
-        sudo("tar -xzf /tmp/{}.tgz -C {}/{}"
-             .format(file_name, folder_to_save, file_name))
+        run("mkdir -p {}/{}".format(folder_to_save, file_name))
+        run("tar -xzf /tmp/{}.tgz -C {}/{}".
+            format(file_name, folder_to_save, file_name))
 
-        sudo("rm {}".format(server_archive_path))
-        sudo("mv {}/{}/web_static/* {}/{}/".
-             format(folder_to_save, file_name, folder_to_save, file_name))
-        sudo("rm -rf {}/{}/web_static".format(folder_to_save, file_name))
+        run("rm {}".format(server_archive_path))
+        run('mv {}/{}/web_static/* {}/{}/'.
+            format(folder_to_save, file_name, folder_to_save, file_name))
+        run("rm -rf {}/{}/web_static".format(folder_to_save, file_name))
 
         try:
-            sudo('rm -rf /data/web_static/current')
+            run('rm -rf /data/web_static/current')
         except BaseException:
             pass
-        sudo("ln -sf {}/{} /data/web_static/current"
-             .format(folder_to_save, file_name))
+        run('ln -sf {}/{} /data/web_static/current'.
+            format(folder_to_save, file_name))
         print("New version deployed!")
         return True
     except Exception:
