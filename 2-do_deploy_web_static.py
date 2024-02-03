@@ -1,27 +1,15 @@
 #!/usr/bin/python3
 """Fabric script that generates a .tgz archive from the contents of the"""
-# from fabric.api import sudo, env, put, local, task
-from fabric.api import *
-from fabric.operations import put, run
-import os
+from fabric.api import sudo, env, put, task
+from datetime import datetime
 
 
-def get_ip_address(domain):
-    """Function To Get IP Address"""
-    import socket
-    try:
-        ip_address = socket.gethostbyname(domain)
-        return ip_address
-    except socket.gaierror:
-        return False
+# env.user = 'ubuntu'
+# env.key_filename = '~/.ssh/alx_server1'
+env.hosts = ['18.207.112.242', '54.167.84.94']
 
 
-env.hosts = [get_ip_address("web-01.minawilliam.tech"),
-             get_ip_address("web-02.minawilliam.tech")]
-
-# env.hosts = ['18.207.112.242', '54.167.84.94']
-
-
+@task
 def do_deploy(archive_path):
     """Function To Deploy File"""
     """
@@ -29,24 +17,33 @@ def do_deploy(archive_path):
     do_deploy:archive_path=versions/web_static_20231009012456.tgz
     -i ./alx -u root
     """
-    if os.path.isfile(archive_path) is False:
+    import os
+    if not os.path.exists(archive_path):
         return False
     try:
-        archive = archive_path.split("/")[-1]
-        path = "/data/web_static/releases"
-        put("{}".format(archive_path), "/tmp/{}".format(archive))
-        folder = archive.split(".")
-        run("mkdir -p {}/{}/".format(path, folder[0]))
-        new_archive = '.'.join(folder)
-        run("tar -xzf /tmp/{} -C {}/{}/"
-            .format(new_archive, path, folder[0]))
-        run("rm /tmp/{}".format(archive))
-        run("mv {}/{}/web_static/* {}/{}/"
-            .format(path, folder[0], path, folder[0]))
-        run("rm -rf {}/{}/web_static".format(path, folder[0]))
-        run("rm -rf /data/web_static/current")
-        run("ln -sf {}/{} /data/web_static/current"
-            .format(path, folder[0]))
+        put(archive_path, "/tmp/")
+
+        folder_to_save = "/data/web_static/releases"
+        file_name_generated = archive_path.split(".")[0]
+        file_name_generated = file_name_generated.split("/")[-1]
+
+        server_archive_path = f"/tmp/{file_name_generated}.tgz"
+        sudo(f"mkdir -p {folder_to_save}/{file_name_generated}")
+        sudo(f"tar -xzf /tmp/{file_name_generated}.tgz "
+             f"-C {folder_to_save}/{file_name_generated}")
+
+        sudo(f"rm {server_archive_path}")
+        sudo(f"mv {folder_to_save}/{file_name_generated}/web_static/*"
+             f" {folder_to_save}/{file_name_generated}/")
+        sudo(f"rm -rf {folder_to_save}/{file_name_generated}/web_static")
+
+        try:
+            sudo('rm -rf /data/web_static/current')
+        except BaseException:
+            pass
+        sudo(f"ln -s {folder_to_save}/{file_name_generated}"
+             f" /data/web_static/current")
+        print("New version deployed!")
         return True
-    except Exception as e:
+    except Exception:
         return False
